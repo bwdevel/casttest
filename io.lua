@@ -7,6 +7,9 @@ end
 
 function love.keyreleased(key)
   if key == 'escape' then love.event.quit() end
+  if key == 'p' then
+    if debug then debug = false else debug = true end
+  end
 
   if key == 'a' then player.move.left = false end
   if key == 'd' then player.move.right = false end

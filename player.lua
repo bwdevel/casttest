@@ -4,7 +4,7 @@ function playerInit()
   out.y = 5
   out.rot = 0
   out.moveSpeed = 0.18
-  out.rotSpeed = 0.5
+  out.rotSpeed = 3
   out.move = {}
     out.move.left = false
     out.move.right = false
@@ -37,4 +37,26 @@ function playerUpdate(dt)
   end
   player.rot = player.rot % (math.pi * 2)
   while player.rot < 0 do player.rot = player.rot + math.pi * 2 end
+
+  local newX = player.x
+  local newY = player.y
+  if player.move.up then
+    newX = player.x + math.cos(player.rot) * player.moveSpeed
+    newY = player.y + math.sin(player.rot) * player.moveSpeed
+  elseif player.move.down then
+    newX = player.x + math.cos(player.rot) * player.moveSpeed * -1
+    newY = player.y + math.sin(player.rot) * player.moveSpeed * -1
+  end
+  if not playerIsBlocked(newX, newY) then
+    player.x = newX
+    player.y = newY
+  end
+end
+
+function playerIsBlocked(x, y)
+  if y < 1 or y > #map or x < 1 or x > #map[1] then
+    return true
+  end
+
+  return (map[math.ceil(y)][math.ceil(x)] ~= 0)
 end

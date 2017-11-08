@@ -5,6 +5,7 @@ require './player'
 require './viewport'
 require './io'
 require './rays'
+require './debug'
 
 function love.load()
   love.graphics.setBackgroundColor(32, 0, 0)
@@ -16,6 +17,8 @@ function love.load()
   viewport  = viewportInit()
 
   createMapFixtures()
+
+  debug = false
 
 end
 
@@ -29,6 +32,7 @@ function love.draw()
   minimapDraw()
   playerDraw()
   viewportDraw()
-  love.graphics.setColor(128, 128, 255, 128)
-  love.graphics.line(Ray.x1, Ray.y1, Ray.x2, Ray.y2)
+  rayDraw()
+
+  if debug then debugDraw() end
 end
