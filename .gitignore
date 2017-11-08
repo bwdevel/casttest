@@ -1,1 +1,5 @@
+**.htm
 *.htm
+examples/
+examples/*
+examples/*.htm
