@@ -1,0 +1,3 @@
+# Love2D Raycasting prototype
+
+This is a new project to protype raycasting in Love2D so that I can wrap my head around it in isolation before importing it into my Github Game Off 2017 project....

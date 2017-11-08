@@ -13,7 +13,7 @@ function minimapDraw()
   for y = 1, #map do
     for x = 1, #map[y] do
       if map[y][x] == 1 then
-        love.graphics.setColor(255, 255, 255, 255)
+        love.graphics.setColor(128, 128, 128, 255)
       else
         love.graphics.setColor(0, 0, 0, 255)
       end

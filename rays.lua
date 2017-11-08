@@ -24,16 +24,13 @@ function rayUpdate(dt)
 
   World:rayCast(Ray.x1, Ray.y1, Ray.x2, Ray.y2, raycastCallback)
 
-  --local closest = {100000, Ray.x2, Ray.y2}
-  local closest = {100000, 100000, 1000000}
-  local index = {}
+  local closest = {getDistance(Ray.x1, Ray.y1, Ray.x2, Ray.y2), Ray.x2, Ray.y2}
   for i = 1, #Ray.hitList do
     local this = Ray.hitList[i]
     local thisDist = getDistance(player.x, player.y, this.x, this.y)
     if thisDist < closest[1] then
       closest = {thisDist, this.x, this.y}
     end
-    print(thisDist .. ',' .. this.x .. ',' .. this.y)
   end
   Ray.closest = closest
 
@@ -42,16 +39,14 @@ end
 function rayDraw()
   love.graphics.setColor(128, 128, 255, 128)
   love.graphics.line(Ray.x1, Ray.y1, Ray.x2, Ray.y2)
-
   for i = 1, #Ray.hitList do
-    this = Ray.hitList[i]
+    local this = Ray.hitList[i]
     if i == 1 then
       love.graphics.setColor(255, 128, 255, 255)
     else
       love.graphics.setColor(128, 255, 128, 255)
     end
     love.graphics.rectangle('fill', this.x - 2, this.y - 2, 4, 4)
-
   end
   love.graphics.setColor(255, 255, 0, 255)
   love.graphics.circle('line', Ray.closest[2] , Ray.closest[3], 10)
@@ -59,5 +54,7 @@ function rayDraw()
 end
 
 function getDistance(ax, ay, bx, by)
-  return math.sqrt(ax * ax + bx * by)
+  local a = math.abs(ax - bx)
+  local b = math.abs(ay - by)
+  return math.sqrt(a * a + b * b)
 end
