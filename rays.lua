@@ -6,7 +6,6 @@ function raycastCallback(fixture, x, y, xn, yn, fraction)
 	hit.fraction = fraction
 
 	table.insert(hitListContainer, hit)
-	--table.insert(RayHitList, hit)
 
 	return 1 -- Continues with ray cast through all shapes.
 end
@@ -24,8 +23,6 @@ function rayInit()
 end
 
 function raysUpdate(dt)
-	--rayUpdate(Ray, dt, player.rot) -- cast guiding ray
-
 	local stripIdx = 0
   for i = 1, #Rays do
 		local rayScreenPos = (-viewport.numRays / 2 + i) * viewport.stripWidth
@@ -85,8 +82,6 @@ function getDistance(ax, ay, bx, by)
   return math.sqrt(a * a + b * b)
 end
 
-
--- table.sort(tab, tableCompare)
 function hitListSort(a, b)
   return a.fraction < b.fraction
 end
