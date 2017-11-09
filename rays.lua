@@ -24,15 +24,23 @@ function rayUpdate(dt)
 
   World:rayCast(Ray.x1, Ray.y1, Ray.x2, Ray.y2, raycastCallback)
 
-  local closest = {getDistance(Ray.x1, Ray.y1, Ray.x2, Ray.y2), Ray.x2, Ray.y2}
-  for i = 1, #Ray.hitList do
-    local this = Ray.hitList[i]
-    local thisDist = getDistance(player.x, player.y, this.x, this.y)
-    if thisDist < closest[1] then
-      closest = {thisDist, this.x, this.y}
-    end
-  end
-  Ray.closest = closest
+  table.sort(Ray.hitList, tableCompare)
+  --print('-----')
+  --for i = 1, #Ray.hitList do
+  --  this = Ray.hitList[i]
+  --  print(this.fraction, this.x, this.y)
+  --end
+  --local closest = {getDistance(Ray.x1, Ray.y1, Ray.x2, Ray.y2), Ray.x2, Ray.y2}
+  --for i = 1, #Ray.hitList do
+  --  local this = Ray.hitList[i]
+    ----local thisDist = getDistance(player.x, player.y, this.x, this.y)
+    --local thisDist = getDistance(Ray.x1, Ray.x2, this.x, this.y)
+    --if thisDist < closest[1] then
+    --  closest = {thisDist, this.x, this.y}
+    --end
+  --end
+  local this = Ray.hitList[1]
+  Ray.closest = {x = this.x, y = this.y }
 
 end
 
@@ -49,7 +57,7 @@ function rayDraw()
     love.graphics.rectangle('fill', this.x - 2, this.y - 2, 4, 4)
   end
   love.graphics.setColor(255, 255, 0, 255)
-  love.graphics.circle('line', Ray.closest[2] , Ray.closest[3], 10)
+  love.graphics.circle('line', Ray.closest.x , Ray.closest.y, 10)
 
 end
 

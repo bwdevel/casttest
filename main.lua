@@ -36,3 +36,8 @@ function love.draw()
 
   if debug then debugDraw() end
 end
+
+-- table.sort(tab, tableCompare)
+function tableCompare(a, b)
+  return a.fraction < b.fraction
+end
