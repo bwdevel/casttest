@@ -23,6 +23,13 @@ function love.load()
   createMapFixtures()
 
   debug = false
+
+  image = love.graphics.newImage( 'walls.png' )
+  strips = {}
+  for x = 0, 63 do
+    strips[x] = love.graphics.newQuad(x, 0, 1, 63, image:getDimensions())
+  end
+
 end
 
 function love.update(dt)
@@ -36,6 +43,5 @@ function love.draw()
   viewportDraw()
   raysDraw()
   playerDraw()
-
   if debug then debugDraw() end
 end
