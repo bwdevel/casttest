@@ -23,8 +23,8 @@ function playerDraw()
   love.graphics.setColor(255, 128, 128, 255)
   love.graphics.rectangle('fill', x1, y1, w, h)
   -- draw direction
-  local x2 = (player.x + math.cos(player.rot) * 2) * minimap.scale + minimap.x
-  local y2 = (player.y + math.sin(player.rot) * 2) * minimap.scale + minimap.y
+  local x2 = (player.x + math.cos(player.rot)) * minimap.scale + minimap.x
+  local y2 = (player.y + math.sin(player.rot)) * minimap.scale + minimap.y
   love.graphics.line(x1 + 2, y1 + 2, x2, y2)
 end
 

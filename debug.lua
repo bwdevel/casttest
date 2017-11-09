@@ -1,7 +1,7 @@
 function debugDraw()
   local text = {
     "FPS: " .. tostring(love.timer.getFPS()),
-    "RayHits: " .. tostring(#Ray.hitList)
+    "Rays: " .. tostring(#Rays)
   }
   local x = 10
   local y = 10
