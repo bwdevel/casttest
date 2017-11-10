@@ -8,6 +8,7 @@ require './rays'
 require './debug'
 
 function love.load()
+  zeroDist = 1
   TWO_PI = math.pi * 2
 
   love.graphics.setBackgroundColor(32, 0, 0)
@@ -43,5 +44,6 @@ function love.draw()
   viewportDraw()
   raysDraw()
   playerDraw()
+  drawSlice(zeroDist)
   if debug then debugDraw() end
 end

@@ -6,7 +6,6 @@ function raycastCallback(fixture, x, y, xn, yn, fraction)
 	hit.fraction = fraction
 
 	table.insert(hitListContainer, hit)
-
 	return 1 -- Continues with ray cast through all shapes.
 end
 
@@ -19,7 +18,7 @@ function raysInit(count)
 end
 
 function rayInit()
-  return { x1 = 0, y1 = 0, x2 = 0, y2 = 0, hitList = {}, closest = nil}
+  return { x1 = 0, y1 = 0, x2 = 0, y2 = 0, hitList = {}, closest = nil, angle = 0}
 end
 
 function raysUpdate(dt)
@@ -48,6 +47,13 @@ function rayUpdate(ray, dt, rayAngle)
   table.sort(ray.hitList, hitListSort)
 
   local this = ray.hitList[1]
+	this.distance = this.fraction * getDistance(ray.x1, ray.y1, ray.x2, ray.y2) * minimap.scale * 2
+	ray.angle = rayAngle
+	if rayAngle == player.rot then
+		zeroDist = this.distance
+--		drawSlice(this.distance)
+	end
+
   ray.closest = {x = this.x, y = this.y }
 end
 
@@ -74,6 +80,7 @@ function rayDraw(ray)
   else
     love.graphics.line(ray.x1, ray.y1, ray.closest.x, ray.closest.y)
   end
+	--drawSlice(ray)
 end
 
 function getDistance(ax, ay, bx, by)
@@ -84,4 +91,17 @@ end
 
 function hitListSort(a, b)
   return a.fraction < b.fraction
+end
+
+function drawSlice(dist)
+	local h = ( 512 / dist) * 256
+	local w = 4
+	local x = viewport.x + viewport.w / 2 - 2
+	local y = viewport.y + viewport.h / 2 - h / 2
+	if y < viewport.y then y = viewport.y end
+	if h > viewport.h then h = viewport.h end
+	print(y)
+	love.graphics.setColor(128, 128, 128, 255)
+	love.graphics.rectangle('fill', x, y, w, h)
+	--print(dist .. ' -> ' .. h)
 end
