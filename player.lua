@@ -4,7 +4,7 @@ function playerInit()
   out.y = 5
   out.rot = 0
   out.moveSpeed = 0.18
-  out.rotSpeed = 3
+  out.rotSpeed = 6
   out.move = {}
     out.move.left = false
     out.move.right = false

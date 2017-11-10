@@ -18,15 +18,16 @@ function raysInit(count)
 end
 
 function rayInit()
-  return { x1 = 0, y1 = 0, x2 = 0, y2 = 0, hitList = {}, closest = nil, angle = 0}
+  return { x1 = 0, y1 = 0, x2 = 0, y2 = 0, hitList = {}, closest = nil, angle = 0, distance = 0}
 end
 
 function raysUpdate(dt)
-	local stripIdx = 0
+	-- local stripIdx = 0
   for i = 1, #Rays do
 		local rayScreenPos = (-viewport.numRays / 2 + i) * viewport.stripWidth
 		local rayViewDist = math.sqrt(rayScreenPos * rayScreenPos + viewport.viewDist * viewport.viewDist)
 		local rayAngle = math.asin(rayScreenPos / rayViewDist)
+		Rays[i].angle = rayAngle
 		local castAngle = rayAngle + player.rot
 		rayUpdate(Rays[i], dt, castAngle)
 	end
@@ -47,23 +48,36 @@ function rayUpdate(ray, dt, rayAngle)
   table.sort(ray.hitList, hitListSort)
 
   local this = ray.hitList[1]
-	this.distance = this.fraction * getDistance(ray.x1, ray.y1, ray.x2, ray.y2) * minimap.scale * 2
+	ray.distance = this.fraction * getDistance(ray.x1, ray.y1, ray.x2, ray.y2) * minimap.scale * 2
 	ray.angle = rayAngle
-	if rayAngle == player.rot then
-		zeroDist = this.distance
---		drawSlice(this.distance)
-	end
-
   ray.closest = {x = this.x, y = this.y }
 end
 
 function raysDraw()
-  --rayDraw(Ray)
-  for i = 1, #Rays do rayDraw(Rays[i]) end
+
+  for i = 1, #Rays do
+		local this = Rays[i]
+		rayDraw(this)
+
+
+		local x = viewport.x + (i - 1) * viewport.stripWidth
+		local h = ( 512 / (this.distance * (math.cos(player.rot - this.angle )))) * 256
+		local hh = h
+		if h > viewport.h then h = viewport.h end
+		local y = viewport.y + viewport.h / 2 - h / 2
+		if y < viewport.y then y = viewport.y end
+		local w = viewport.stripWidth
+		local color = 128 - (128 * (this.distance / 5000))
+		if color > 255 then color = 255 end
+		love.graphics.setColor(color, color, color, 255)
+		love.graphics.rectangle('fill', x, y, w, h)
+
+		--love.graphics.draw(image, strips[i - 1], x, y, 0, 8, 8 * (h / 512))
+	end
 end
 
 function rayDraw(ray)
-  love.graphics.setColor(128, 128, 255, 128)
+	love.graphics.setColor(128, 128, 255, 128)
   if debug then
     love.graphics.line(ray.x1, ray.y1, ray.x2, ray.y2)
     for i = 1, #ray.hitList do
@@ -80,7 +94,6 @@ function rayDraw(ray)
   else
     love.graphics.line(ray.x1, ray.y1, ray.closest.x, ray.closest.y)
   end
-	--drawSlice(ray)
 end
 
 function getDistance(ax, ay, bx, by)
@@ -93,7 +106,7 @@ function hitListSort(a, b)
   return a.fraction < b.fraction
 end
 
-function drawSlice(dist)
+function drawSlice(dist, x, y, w, h)
 	local h = ( 512 / dist) * 256
 	local w = 4
 	local x = viewport.x + viewport.w / 2 - 2
