@@ -10,6 +10,8 @@ function playerInit()
     out.move.right = false
     out.move.up = false
     out.move.down = false
+    out.move.sleft = false
+    out.move.sright = false
   return out
 end
 
@@ -47,6 +49,14 @@ function playerUpdate(dt)
     newX = player.x + math.cos(player.rot) * player.moveSpeed * -1
     newY = player.y + math.sin(player.rot) * player.moveSpeed * -1
   end
+  if player.move.sleft then
+    newX = player.x + math.cos(player.rot - math.pi / 2) * player.moveSpeed
+    newY = player.y + math.sin(player.rot - math.pi / 2) * player.moveSpeed
+  elseif player.move.sright then
+    newX = player.x + math.cos(player.rot - math.pi / 2) * player.moveSpeed * -1
+    newY = player.y + math.sin(player.rot - math.pi / 2) * player.moveSpeed * -1
+  end
+
   if not playerIsBlocked(newX, newY) then
     player.x = newX
     player.y = newY

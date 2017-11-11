@@ -3,6 +3,8 @@ function love.keypressed(key)
   if key == 'd' or key == 'right' then player.move.right = true end
   if key == 'w' or key == 'up' then player.move.up = true end
   if key == 's' or key == 'down' then player.move.down = true end
+  if key == 'q' then player.move.sleft = true end
+  if key == 'e' then player.move.sright = true end
 end
 
 function love.keyreleased(key)
@@ -15,4 +17,6 @@ function love.keyreleased(key)
   if key == 'd' or key == 'right' then player.move.right = false end
   if key == 'w' or key == 'up' then player.move.up = false end
   if key == 's' or key == 'down' then player.move.down = false end
+  if key == 'q' then player.move.sleft = false end
+  if key == 'e' then player.move.sright = false end
 end

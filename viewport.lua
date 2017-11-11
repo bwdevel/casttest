@@ -14,8 +14,10 @@ end
 
 function viewportDraw()
 
-  love.graphics.setColor(0, 0, 0, 255)
-  love.graphics.rectangle('fill', viewport.x, viewport.y, viewport.w, viewport.h)
+  love.graphics.setColor(32, 32, 32, 255)
+  love.graphics.rectangle('fill', viewport.x, viewport.y, viewport.w, viewport.h / 2)
+  love.graphics.setColor(16, 16, 16, 255)
+  love.graphics.rectangle('fill', viewport.x, viewport.y + viewport.h / 2, viewport.w, viewport.h / 2)
   love.graphics.setColor(255, 255, 255, 255)
   love.graphics.rectangle('line', viewport.x, viewport.y, viewport.w, viewport.h)
 end

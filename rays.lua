@@ -18,7 +18,7 @@ function raysInit(count)
 end
 
 function rayInit()
-  return { x1 = 0, y1 = 0, x2 = 0, y2 = 0, hitList = {}, closest = nil, angle = 0, distance = 0}
+  return { x1 = 0, y1 = 0, x2 = 0, y2 = 0, hitList = {}, closest = {}, angle = 0, distance = 0}
 end
 
 function raysUpdate(dt)
@@ -29,18 +29,18 @@ function raysUpdate(dt)
 		local rayAngle = math.asin(rayScreenPos / rayViewDist)
 		Rays[i].angle = rayAngle
 		local castAngle = rayAngle + player.rot
-		rayUpdate(Rays[i], dt, castAngle)
+		rayUpdate(i, dt, castAngle)
 	end
 end
 
-function rayUpdate(ray, dt, rayAngle)
-  ray.hitList = {}
+function rayUpdate(rInd, dt, rayAngle)
+  Rays[rInd].hitList = {}
 	hitListContainer = {}
 
-  ray.x1 = player.x * minimap.scale + minimap.x
-  ray.y1 = player.y * minimap.scale + minimap.y
-  ray.x2 = (player.x + math.cos(rayAngle) * 1000) * minimap.scale + minimap.x
-  ray.y2 = (player.y + math.sin(rayAngle) * 1000) * minimap.scale + minimap.y
+  Rays[rInd].x1 = player.x * minimap.scale + minimap.x
+  Rays[rInd].y1 = player.y * minimap.scale + minimap.y
+  Rays[rInd].x2 = (player.x + math.cos(rayAngle) * 1000) * minimap.scale + minimap.x
+  Rays[rInd].y2 = (player.y + math.sin(rayAngle) * 1000) * minimap.scale + minimap.y
   World:rayCast(ray.x1, ray.y1, ray.x2, ray.y2, raycastCallback) -- rayCastLogic
 	for i = 1, #hitListContainer do
 		table.insert(ray.hitList, hitListContainer[i])
@@ -50,7 +50,9 @@ function rayUpdate(ray, dt, rayAngle)
   local this = ray.hitList[1]
 	ray.distance = this.fraction * getDistance(ray.x1, ray.y1, ray.x2, ray.y2) * minimap.scale * 2
 	ray.angle = rayAngle
-  ray.closest = {x = this.x, y = this.y }
+	-- print normals (x = -1 - +1, y = -1 - +1)
+	--if rayAngle == player.rot then 	print(this.xn, this.yn) end
+  ray.closest = {x = this.x, y = this.y, xn = this.xn, yn = this.yn, fraction = this.fraction }
 end
 
 function raysDraw()
@@ -67,12 +69,17 @@ function raysDraw()
 		local y = viewport.y + viewport.h / 2 - h / 2
 		if y < viewport.y then y = viewport.y end
 		local w = viewport.stripWidth
-		local color = 128 - (128 * (this.distance / 5000))
+		local color = 255 - (128 * (this.distance / 5000))
 		if color > 255 then color = 255 end
 		love.graphics.setColor(color, color, color, 255)
-		love.graphics.rectangle('fill', x, y, w, h)
+		if this.angle == player.rot then
+			love.graphics.setColor(255, 128, 128, 255)
+			--print(this.closest.angle	)
+			print(this.x)
+		end
+		-- love.graphics.rectangle('fill', x, y, w, h)
 
-		--love.graphics.draw(image, strips[i - 1], x, y, 0, 8, 8 * (h / 512))
+		love.graphics.draw(image, strips[i - 1], x, y + 1, 0, 8	, 8 * (h / 512))
 	end
 end
 
