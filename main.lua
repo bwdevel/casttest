@@ -8,6 +8,7 @@ require './rays'
 require './debug'
 
 function love.load()
+  MOVE_TYPE = 'grid'
   TWO_PI = math.pi * 2
 
   love.graphics.setBackgroundColor(32, 0, 0)
@@ -26,7 +27,7 @@ function love.load()
 
   image = love.graphics.newImage( 'walls.png' )
   strips = {}
-  for x = 0, 63 do
+  for x = 0, 127 do
     strips[x] = love.graphics.newQuad(x, 0, 1, 63, image:getDimensions())
   end
 end

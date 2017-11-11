@@ -1,10 +1,10 @@
 function playerInit()
   local out = {}
-  out.x = 4
-  out.y = 5
+  out.x = 4.5
+  out.y = 5.5
   out.rot = 0
-  out.moveSpeed = 0.18
-  out.rotSpeed = 6
+  out.moveSpeed = 0.06
+  out.rotSpeed = 3
   out.move = {}
     out.move.left = false
     out.move.right = false
@@ -31,30 +31,61 @@ function playerDraw()
 end
 
 function playerUpdate(dt)
-  if player.move.right then
-    player.rot = player.rot + player.rotSpeed * dt
-  end
-  if player.move.left then
-    player.rot = player.rot - player.rotSpeed * dt
-  end
-  player.rot = player.rot % (math.pi * 2)
-  while player.rot < 0 do player.rot = player.rot + math.pi * 2 end
 
   local newX = player.x
   local newY = player.y
-  if player.move.up then
-    newX = player.x + math.cos(player.rot) * player.moveSpeed
-    newY = player.y + math.sin(player.rot) * player.moveSpeed
-  elseif player.move.down then
-    newX = player.x + math.cos(player.rot) * player.moveSpeed * -1
-    newY = player.y + math.sin(player.rot) * player.moveSpeed * -1
-  end
-  if player.move.sleft then
-    newX = player.x + math.cos(player.rot - math.pi / 2) * player.moveSpeed
-    newY = player.y + math.sin(player.rot - math.pi / 2) * player.moveSpeed
-  elseif player.move.sright then
-    newX = player.x + math.cos(player.rot - math.pi / 2) * player.moveSpeed * -1
-    newY = player.y + math.sin(player.rot - math.pi / 2) * player.moveSpeed * -1
+
+  if MOVE_TYPE == 'real' then
+    if player.move.right then
+      player.rot = player.rot + player.rotSpeed * dt
+    end
+    if player.move.left then
+      player.rot = player.rot - player.rotSpeed * dt
+    end
+    player.rot = player.rot % (math.pi * 2)
+    while player.rot < 0 do player.rot = player.rot + math.pi * 2 end
+
+    if player.move.up then
+      newX = player.x + math.cos(player.rot) * player.moveSpeed
+      newY = player.y + math.sin(player.rot) * player.moveSpeed
+    elseif player.move.down then
+      newX = player.x + math.cos(player.rot) * player.moveSpeed * -1
+      newY = player.y + math.sin(player.rot) * player.moveSpeed * -1
+    end
+    if player.move.sleft then
+      newX = player.x + math.cos(player.rot - math.pi / 2) * player.moveSpeed
+      newY = player.y + math.sin(player.rot - math.pi / 2) * player.moveSpeed
+    elseif player.move.sright then
+      newX = player.x + math.cos(player.rot - math.pi / 2) * player.moveSpeed * -1
+      newY = player.y + math.sin(player.rot - math.pi / 2) * player.moveSpeed * -1
+    end
+  elseif MOVE_TYPE == 'grid' then
+    if player.move.up then
+      newX = player.x + math.cos(player.rot)
+      newY = player.y + math.sin(player.rot)
+--      newX = player.x + 1.0
+      player.move.up = false
+    elseif player.move.down then
+      newX = player.x + math.cos(player.rot) * -1
+      newY = player.y + math.sin(player.rot) * -1
+      player.move.down = false
+    elseif player.move.left then
+      print('move left')
+      player.rot = (player.rot - math.pi / 2) % (math.pi * 2)
+      player.move.left = false
+    elseif player.move.right then
+      print('move left')
+      player.rot = (player.rot + math.pi / 2) % (math.pi * 2)
+      player.move.right = false
+    elseif player.move.sleft then
+      newX = player.x + math.cos(player.rot - math.pi / 2)
+      newY = player.y + math.sin(player.rot - math.pi / 2)
+      player.move.sleft = false
+    elseif player.move.sright then
+      newX = player.x + math.cos(player.rot - math.pi / 2) * -1
+      newY = player.y + math.sin(player.rot - math.pi / 2) * -1
+      player.move.sright = false
+    end
   end
 
   if not playerIsBlocked(newX, newY) then
