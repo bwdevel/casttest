@@ -36,6 +36,7 @@ function playerUpdate(dt)
   local newY = player.y
 
   if MOVE_TYPE == 'real' then
+    local moveRate = player.moveSpeed
     if player.move.right then
       player.rot = player.rot + player.rotSpeed * dt
     end
@@ -46,35 +47,32 @@ function playerUpdate(dt)
     while player.rot < 0 do player.rot = player.rot + math.pi * 2 end
 
     if player.move.up then
-      newX = player.x + math.cos(player.rot) * player.moveSpeed
-      newY = player.y + math.sin(player.rot) * player.moveSpeed
+      newX = player.x + math.cos(player.rot) * moveRate
+      newY = player.y + math.sin(player.rot) * moveRate
     elseif player.move.down then
-      newX = player.x + math.cos(player.rot) * player.moveSpeed * -1
-      newY = player.y + math.sin(player.rot) * player.moveSpeed * -1
+      newX = player.x + math.cos(player.rot) * moveRate * -1
+      newY = player.y + math.sin(player.rot) * moveRate * -1
     end
     if player.move.sleft then
-      newX = player.x + math.cos(player.rot - math.pi / 2) * player.moveSpeed
-      newY = player.y + math.sin(player.rot - math.pi / 2) * player.moveSpeed
+      newX = player.x + math.cos(player.rot - math.pi / 2) * moveRate
+      newY = player.y + math.sin(player.rot - math.pi / 2) * moveRate
     elseif player.move.sright then
-      newX = player.x + math.cos(player.rot - math.pi / 2) * player.moveSpeed * -1
-      newY = player.y + math.sin(player.rot - math.pi / 2) * player.moveSpeed * -1
+      newX = player.x + math.cos(player.rot - math.pi / 2) * moveRate * -1
+      newY = player.y + math.sin(player.rot - math.pi / 2) * moveRate * -1
     end
   elseif MOVE_TYPE == 'grid' then
     if player.move.up then
       newX = player.x + math.cos(player.rot)
       newY = player.y + math.sin(player.rot)
---      newX = player.x + 1.0
       player.move.up = false
     elseif player.move.down then
       newX = player.x + math.cos(player.rot) * -1
       newY = player.y + math.sin(player.rot) * -1
       player.move.down = false
     elseif player.move.left then
-      print('move left')
       player.rot = (player.rot - math.pi / 2) % (math.pi * 2)
       player.move.left = false
     elseif player.move.right then
-      print('move left')
       player.rot = (player.rot + math.pi / 2) % (math.pi * 2)
       player.move.right = false
     elseif player.move.sleft then
@@ -97,7 +95,7 @@ end
 function playerIsBlocked(x, y)
   if y < 1 or y > #map or x < 1 or x > #map[1] then
     return true
+  else
+    return (map[math.ceil(y)][math.ceil(x)] ~= 0)
   end
-
-  return (map[math.ceil(y)][math.ceil(x)] ~= 0)
 end

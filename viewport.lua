@@ -4,7 +4,7 @@ function viewportInit()
   out.h = 512
   out.y = love.graphics.getHeight() / 2 - out.h / 2
   out.x = out.y
-  out.stripWidth = 8
+  out.stripWidth = 2
   out.fov = 75 * math.pi / 180
   out.fovHalf = out.fov / 2
   out.numRays = math.ceil(out.w / out.stripWidth)

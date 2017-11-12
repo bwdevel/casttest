@@ -25,9 +25,9 @@ function love.load()
 
   debug = false
 
-  image = love.graphics.newImage( 'walls.png' )
+  image = love.graphics.newImage( 'assets/wall_01.png' )
   strips = {}
-  for x = 0, 127 do
+  for x = 0, 63 do
     strips[x] = love.graphics.newQuad(x, 0, 1, 63, image:getDimensions())
   end
 end

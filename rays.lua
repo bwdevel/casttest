@@ -62,58 +62,58 @@ function raysDraw()
 
   for i = 1, #Rays do
 		local this = Rays[i]
-		rayDraw(this)
-
-
+		rayDraw(i) -- draws rays on minimap
+		stripDraw(i)
+--[[
 		local x = viewport.x + (i - 1) * viewport.stripWidth
-		local h = ( 512 / (this.distance * (math.cos(player.rot - this.angle )))) * 256
-		local hh = h
+		local h = ( 512 / (Rays[i].distance * (math.cos(player.rot - Rays[i].angle )))) * 256
 		if h > viewport.h then h = viewport.h end
 		local y = viewport.y + viewport.h / 2 - h / 2
 		if y < viewport.y then y = viewport.y end
 		local w = viewport.stripWidth
-		local color = 255 - (128 * (this.distance / 5000))
+
+		local color = 255 - (128 * (Rays[i].distance / 5000))
 		if color > 255 then color = 255 end
-		if this.closest.xn < 0 or this.closest.yn < 0 then
-			color = color / 2
+		if Rays[i].closest.xn < 0 or Rays[i].closest.yn < 0 then
+			color = color * 0.67
 		end
 		love.graphics.setColor(color, color, color, 255)
-
-		if this.angle == player.rot then
+		if Rays[i].angle == player.rot then
 			love.graphics.setColor(255, 128, 128, 255)
-			--print(this.closest.angle	)
-			--print(Rays[i].closest.x)
 		end
+
 		-- love.graphics.rectangle('fill', x, y, w, h)
-		local offset = getTexOffset(this.closest.x, this.closest.y, this.closest.xn, this.closest.yn)
+		local offset = getTexOffset(Rays[i].closest.x, Rays[i].closest.y, Rays[i].closest.xn, Rays[i].closest.yn)
+			--if Rays[i].closest.xn > 0 or Rays[i].closest.yn < 0 then offset = offset - 1 end
+			--while offset < 0 do offset = offset + 64 end
 		offset = (i + math.floor(offset)) % 64
 		--if offset < 1 then offset = 1 end
 		--if this.angle == player.rot then print(offset) end
 		--if this.angle == player.rot then print(this.closest.x, this.closest.y, this.closest.xn, this.closest.yn) end
-		--offset = offset - 1
 		--if this.closest.xn < 0 or this.closest.yn < 0 then offset = offset + 64 end
-		if this.angle == player.rot then print(player.x, offset, this.closest.xn, this.closest.yn) end
-		love.graphics.draw(image, strips[offset], x, y + 1, 0, 8	, 8 * (h / 512))
+		--love.graphics.draw(image, strips[offset], x, y + 1, 0, 8	, 8 * (h / 512))
+		love.graphics.draw(image, strips[offset], x, y + 1, 0, 8	, 8 * (h / 512))]]
 	end
 end
 
-function rayDraw(ray)
+-- draws rays o minimap
+function rayDraw(rInd)
 	love.graphics.setColor(128, 128, 255, 128)
   if debug then
-    love.graphics.line(ray.x1, ray.y1, ray.x2, ray.y2)
-    for i = 1, #ray.hitList do
-      local this = ray.hitList[i]
+    love.graphics.line(Rays[rInd].x1, Rays[rInd].y1, Rays[rInd].x2, Rays[rInd].y2)
+    for i = 1, #Rays[rInd].hitList do
+      local this = Rays[rInd].hitList[i]
       if i == 1 then
         love.graphics.setColor(255, 128, 255, 255)
       else
         love.graphics.setColor(128, 255, 128, 255)
       end
-      love.graphics.rectangle('fill', this.x - 2, this.y - 2, 4, 4)
+      love.graphics.rectangle('fill', Rays[rInd].x - 2, Rays[rInd].y - 2, 4, 4)
     end
     love.graphics.setColor(255, 255, 0, 255)
-    love.graphics.circle('line', ray.closest.x , ray.closest.y, 10)
+    love.graphics.circle('line', Rays[rInd].closest.x , Rays[rInd].closest.y, 10)
   else
-    love.graphics.line(ray.x1, ray.y1, ray.closest.x, ray.closest.y)
+    love.graphics.line(Rays[rInd].x1, Rays[rInd].y1, Rays[rInd].closest.x, Rays[rInd].closest.y)
   end
 end
 
@@ -134,10 +134,8 @@ function drawSlice(dist, x, y, w, h)
 	local y = viewport.y + viewport.h / 2 - h / 2
 	if y < viewport.y then y = viewport.y end
 	if h > viewport.h then h = viewport.h end
-	--print(y)
 	love.graphics.setColor(128, 128, 128, 255)
 	love.graphics.rectangle('fill', x, y, w, h)
-	--print(dist .. ' -> ' .. h)
 end
 
 function getTexOffset(x, y, xn, yn)
@@ -151,4 +149,38 @@ function getTexOffset(x, y, xn, yn)
 		--return yBase
 		return y % 64
 	end
+end
+
+
+function stripDraw(i)
+
+	local x = viewport.x + (i - 1) * viewport.stripWidth
+	local h = ( 512 / (Rays[i].distance * (math.cos(player.rot - Rays[i].angle )))) * 256
+	if h > viewport.h then h = viewport.h end
+	local y = viewport.y + viewport.h / 2 - h / 2
+	if y < viewport.y then y = viewport.y end
+	local w = viewport.stripWidth
+
+	local color = 255 - (128 * (Rays[i].distance / 5000))
+	if color > 255 then color = 255 end
+	if Rays[i].closest.xn < 0 or Rays[i].closest.yn < 0 then
+		color = color * 0.67
+	end
+	love.graphics.setColor(color, color, color, 255)
+	if Rays[i].angle == player.rot then
+		love.graphics.setColor(255, 128, 128, 255)
+	end
+
+	-- love.graphics.rectangle('fill', x, y, w, h)
+	local offset = getTexOffset(Rays[i].closest.x, Rays[i].closest.y, Rays[i].closest.xn, Rays[i].closest.yn)
+		--if Rays[i].closest.xn > 0 or Rays[i].closest.yn < 0 then offset = offset - 1 end
+		--while offset < 0 do offset = offset + 64 end
+	offset = (i + math.floor(offset)) % 64
+	--if offset < 1 then offset = 1 end
+	--if this.angle == player.rot then print(offset) end
+	--if this.angle == player.rot then print(this.closest.x, this.closest.y, this.closest.xn, this.closest.yn) end
+	--if this.closest.xn < 0 or this.closest.yn < 0 then offset = offset + 64 end
+	--love.graphics.draw(image, strips[offset], x, y + 1, 0, 8	, 8 * (h / 512))
+	love.graphics.draw(image, strips[offset], x, y + 1, 0, 8	, 8 * (h / 512))
+
 end
