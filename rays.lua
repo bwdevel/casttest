@@ -50,53 +50,18 @@ function rayUpdate(rInd, dt, rayAngle)
   local this = Rays[rInd].hitList[1]
 	Rays[rInd].distance = this.fraction * getDistance(Rays[rInd].x1, Rays[rInd].y1, Rays[rInd].x2, Rays[rInd].y2) * minimap.scale * 2
 	Rays[rInd].angle = rayAngle
-	-- print normals (x = -1 - +1, y = -1 - +1)
-	--if rayAngle == player.rot then 	print(this.xn, this.yn) end
-	--if rayAngle == player.rot then 	print(this.x) end
-	--if rayAngle == player.rot then 	print(getTexOffset(this.x, this.y, this.xn, this.yn)) end
-	--if rayAngle == player.rot then 	print(this.x, this.y, this.xn, this.yn, this.x - viewport.x, this.y - viewport.y) end
   Rays[rInd].closest = {x = this.x, y = this.y, xn = this.xn, yn = this.yn, fraction = this.fraction }
 end
 
 function raysDraw()
-
   for i = 1, #Rays do
 		local this = Rays[i]
 		rayDraw(i) -- draws rays on minimap
 		stripDraw(i)
---[[
-		local x = viewport.x + (i - 1) * viewport.stripWidth
-		local h = ( 512 / (Rays[i].distance * (math.cos(player.rot - Rays[i].angle )))) * 256
-		if h > viewport.h then h = viewport.h end
-		local y = viewport.y + viewport.h / 2 - h / 2
-		if y < viewport.y then y = viewport.y end
-		local w = viewport.stripWidth
-
-		local color = 255 - (128 * (Rays[i].distance / 5000))
-		if color > 255 then color = 255 end
-		if Rays[i].closest.xn < 0 or Rays[i].closest.yn < 0 then
-			color = color * 0.67
-		end
-		love.graphics.setColor(color, color, color, 255)
-		if Rays[i].angle == player.rot then
-			love.graphics.setColor(255, 128, 128, 255)
-		end
-
-		-- love.graphics.rectangle('fill', x, y, w, h)
-		local offset = getTexOffset(Rays[i].closest.x, Rays[i].closest.y, Rays[i].closest.xn, Rays[i].closest.yn)
-			--if Rays[i].closest.xn > 0 or Rays[i].closest.yn < 0 then offset = offset - 1 end
-			--while offset < 0 do offset = offset + 64 end
-		offset = (i + math.floor(offset)) % 64
-		--if offset < 1 then offset = 1 end
-		--if this.angle == player.rot then print(offset) end
-		--if this.angle == player.rot then print(this.closest.x, this.closest.y, this.closest.xn, this.closest.yn) end
-		--if this.closest.xn < 0 or this.closest.yn < 0 then offset = offset + 64 end
-		--love.graphics.draw(image, strips[offset], x, y + 1, 0, 8	, 8 * (h / 512))
-		love.graphics.draw(image, strips[offset], x, y + 1, 0, 8	, 8 * (h / 512))]]
 	end
 end
 
--- draws rays o minimap
+-- draws rays on minimap
 function rayDraw(rInd)
 	love.graphics.setColor(128, 128, 255, 128)
   if debug then
@@ -139,22 +104,16 @@ function drawSlice(dist, x, y, w, h)
 end
 
 function getTexOffset(x, y, xn, yn)
-	--local offset = 0
-	--local yBase = math.abs( (y % (64 / 4)))
-	--local xBase = math.abs( (x % 64) / 4)
-	if yn ~= 0 then
-		--return xBase
+	if xn ~= 0 then
 		return x % 64
 	else
-		--return yBase
 		return y % 64
 	end
 end
 
-
 function stripDraw(i)
-
 	local x = viewport.x + (i - 1) * viewport.stripWidth
+	-- (math.cos(player.rot - Rays[i].angle) <== fixes wall curve
 	local h = ( 512 / (Rays[i].distance * (math.cos(player.rot - Rays[i].angle )))) * 256
 	if h > viewport.h then h = viewport.h end
 	local y = viewport.y + viewport.h / 2 - h / 2
@@ -171,16 +130,15 @@ function stripDraw(i)
 		love.graphics.setColor(255, 128, 128, 255)
 	end
 
-	-- love.graphics.rectangle('fill', x, y, w, h)
 	local offset = getTexOffset(Rays[i].closest.x, Rays[i].closest.y, Rays[i].closest.xn, Rays[i].closest.yn)
 		--if Rays[i].closest.xn > 0 or Rays[i].closest.yn < 0 then offset = offset - 1 end
 		--while offset < 0 do offset = offset + 64 end
 	offset = (i + math.floor(offset)) % 64
 	--if offset < 1 then offset = 1 end
-	--if this.angle == player.rot then print(offset) end
+	if Rays[i].angle == player.rot then print(i, offset, Rays[i].distance, offset/Rays[i].distance, Rays[i].distance / offset) end
 	--if this.angle == player.rot then print(this.closest.x, this.closest.y, this.closest.xn, this.closest.yn) end
 	--if this.closest.xn < 0 or this.closest.yn < 0 then offset = offset + 64 end
 	--love.graphics.draw(image, strips[offset], x, y + 1, 0, 8	, 8 * (h / 512))
+	--print(offset, i)
 	love.graphics.draw(image, strips[offset], x, y + 1, 0, 8	, 8 * (h / 512))
-
 end
